@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useCartContext } from '../context/CartContext'
+import { toast } from 'react-toastify'
 import { motion } from 'framer-motion'
 import SkeletonCard from '../components/SkeletonCard'
 import { formatINR, discountedPrice } from '../utils/currency'
@@ -105,8 +106,8 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-4">
-            <button onClick={() => addToCart({ id: product.id, name: product.title, price: product.price, image: (product.image || product.thumbnail || 'https://via.placeholder.com/600') })} className="flex-1 px-4 py-3 rounded-md btn-primary btn-glow">Add to cart</button>
-            <button onClick={() => addToWishlist({ id: product.id, name: product.title, price: product.price, image: (product.image || product.thumbnail || 'https://via.placeholder.com/600') })} className="px-4 py-3 rounded-md border text-[var(--text-primary)]">Add to wishlist</button>
+            <button onClick={() => { addToCart({ id: product.id, name: product.title, price: product.price, image: (product.image || product.thumbnail || 'https://via.placeholder.com/600') }); toast.success('Added to cart') }} className="flex-1 px-4 py-3 rounded-md btn-primary btn-glow">Add to cart</button>
+            <button onClick={() => { addToWishlist({ id: product.id, name: product.title, price: product.price, image: (product.image || product.thumbnail || 'https://via.placeholder.com/600') }); toast.success('Added to wishlist') }} className="px-4 py-3 rounded-md border text-[var(--text-primary)]">Add to wishlist</button>
           </div>
         </div>
       </div>

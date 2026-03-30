@@ -4,7 +4,7 @@ import useProducts from '../hooks/useProducts'
 import { formatINR } from '../utils/currency'
 
 export default function Sidebar({ mobile = false }) {
-  const { categories, selectedCategories, toggleCategory, priceRange, setPriceRange, sort, setSort, clearFilters } = useFilter()
+  const { categories, selectedCategory, selectCategory, priceRange, setPriceRange, sort, setSort, clearFilters } = useFilter()
   const { products } = useProducts()
 
   const maxPrice = useMemo(() => {
@@ -34,11 +34,11 @@ export default function Sidebar({ mobile = false }) {
             <div>
               <div className="font-medium mb-3 text-[var(--text-label)]">CATEGORY</div>
               <div className="flex flex-col gap-2">
-                <button onClick={() => { /* reset categories */ selectedCategories.forEach(c => toggleCategory(c)) }} className={`text-left px-3 py-2 rounded ${selectedCategories.length === 0 ? 'bg-indigo-50 text-indigo-700' : 'text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'}`}>All</button>
+                <button onClick={() => selectCategory('all')} className={`text-left px-3 py-2 rounded ${selectedCategory === 'all' ? 'bg-indigo-50 text-indigo-700' : 'text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'}`}>All</button>
                 {categories.map(cat => {
-                  const active = selectedCategories.includes(cat)
+                  const active = selectedCategory === cat
                   return (
-                    <button key={cat} onClick={() => toggleCategory(cat)} className={`text-left px-3 py-2 rounded ${active ? 'bg-indigo-600 text-white' : 'text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'}`}>
+                    <button key={cat} onClick={() => selectCategory(cat)} className={`text-left px-3 py-2 rounded ${active ? 'bg-indigo-600 text-white' : 'text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'}`}>
                       {cat}
                     </button>
                   )

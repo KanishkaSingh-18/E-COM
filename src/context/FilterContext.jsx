@@ -5,7 +5,8 @@ const FilterContext = createContext()
 
 export function FilterProvider({ children }) {
   const [categories, setCategories] = useState([])
-  const [selectedCategories, setSelectedCategories] = useState([]) // multi-select
+  // single selection: 'all' means no category filter
+  const [selectedCategory, setSelectedCategory] = useState('all')
   const [priceRange, setPriceRange] = useState(null) // e.g. '0-50'
   const [sort, setSort] = useState('') // 'price-asc' | 'price-desc' | 'rating'
 
@@ -24,18 +25,19 @@ export function FilterProvider({ children }) {
     return () => { mounted = false }
   }, [])
 
-  const toggleCategory = (cat) => {
-    setSelectedCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
+  // select a single category. if same category is clicked again, reset to 'all'
+  const selectCategory = (cat) => {
+    setSelectedCategory(prev => (prev === cat ? 'all' : cat))
   }
 
   const clearFilters = () => {
-    setSelectedCategories([])
+    setSelectedCategory('all')
     setPriceRange(null)
     setSort('')
   }
 
   return (
-    <FilterContext.Provider value={{ categories, selectedCategories, toggleCategory, priceRange, setPriceRange, sort, setSort, clearFilters }}>
+    <FilterContext.Provider value={{ categories, selectedCategory, selectCategory, priceRange, setPriceRange, sort, setSort, clearFilters }}>
       {children}
     </FilterContext.Provider>
   )

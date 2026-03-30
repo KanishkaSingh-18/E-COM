@@ -4,11 +4,12 @@ import SkeletonCard from './SkeletonCard'
 import useProducts from '../hooks/useProducts'
 import { useSearch } from '../context/SearchContext'
 import { useFilter } from '../context/FilterContext'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function ProductGrid({ featured = false, limit = 0 }) {
   const { products, loading, error, refetch } = useProducts()
   const { query } = useSearch()
-  const { selectedCategories, priceRange, sort } = useFilter()
+  const { selectedCategory, priceRange, sort } = useFilter()
 
   const filtered = products.filter(p => {
     const title = (p.title || p.name || '').toString()
@@ -19,10 +20,9 @@ export default function ProductGrid({ featured = false, limit = 0 }) {
       const hay = `${title} ${description} ${category}`.toLowerCase()
       if (!hay.includes(q)) return false
     }
-    if (selectedCategories && selectedCategories.length > 0) {
+    if (selectedCategory && selectedCategory !== 'all') {
       const cat = (p.raw?.category || p.category || '').toLowerCase()
-      const matches = selectedCategories.map(c => c.toLowerCase())
-      if (!matches.includes(cat)) return false
+      if (cat !== selectedCategory.toLowerCase()) return false
     }
     if (priceRange) {
       // priceRange may be a numeric max value or a string; support both
@@ -70,11 +70,15 @@ export default function ProductGrid({ featured = false, limit = 0 }) {
               )}
             </div>
           ) : (
-            <div className={featured ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'}>
-              {(limit && filtered.length > limit ? filtered.slice(0, limit) : filtered).map(p => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            <motion.div layout className={featured ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'}>
+              <AnimatePresence initial={false} mode="popLayout">
+                {(limit && filtered.length > limit ? filtered.slice(0, limit) : filtered).map(p => (
+                  <motion.div key={p.id} layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6, transition: { duration: 0 } }} transition={{ duration: 0.18 }}>
+                    <ProductCard product={p} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           )}
         </>
       )}
