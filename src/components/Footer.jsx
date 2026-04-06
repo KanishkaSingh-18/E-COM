@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FiTwitter, FiInstagram, FiFacebook } from 'react-icons/fi'
+import {FiInstagram} from 'react-icons/fi'
 
 export default function Footer() {
   return (
